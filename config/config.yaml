@@ -1,0 +1,80 @@
+# Plastic Waste Detection for Recycling Automation
+# Configuration File
+
+# Project Paths
+project:
+  root: "./data"
+  raw_dir: "./data/raw"
+  processed_dir: "./data/processed"
+  models_dir: "./models"
+  outputs_dir: "./outputs"
+  metrics_dir: "./outputs/metrics"
+
+# Classes to Detect
+classes:
+  - plastic_bottle
+  - plastic_bag
+  - plastic_wrapper
+
+# Data Acquisition (Web Scraping)
+scraper:
+  search_queries:
+    plastic_bottle: ["plastic bottle recycling", "discarded plastic bottle"]
+    plastic_bag: ["plastic bag litter", "discarded plastic bag"]
+    plastic_wrapper: ["plastic wrapper packaging", "plastic wrapper litter"]
+  max_images_per_class: 500
+  timeout: 10  # seconds per image download
+  image_extensions: [".jpg", ".jpeg", ".png"]
+  min_image_size: 50  # minimum dimension in pixels
+
+# Data Preprocessing
+preprocessing:
+  train_split: 0.8
+  val_split: 0.1
+  test_split: 0.1
+  seed: 42
+  augmentation:
+    enabled: true
+    augmentation_factor: 1  # multiply dataset size with augmentation
+    transforms:
+      - horizontal_flip: 0.5
+      - vertical_flip: 0.2
+      - rotation: 30
+      - brightness: 0.2
+      - contrast: 0.2
+      - blur: 3
+
+# Auto-Labeling (Pre-trained YOLOv8n)
+auto_label:
+  model_name: "yolov8n"
+  confidence_threshold: 0.3
+  iou_threshold: 0.45
+
+# Training Configuration
+training:
+  model_name: "yolov8m"  # yolov8n, yolov8s, yolov8m, yolov8l, yolov8x
+  epochs: 50
+  batch_size: 16
+  img_size: 640
+  patience: 10  # early stopping
+  device: 0  # GPU device ID, or 'cpu'
+  optimizer: "SGD"
+  learning_rate: 0.01
+  weight_decay: 0.0005
+  momentum: 0.937
+  seed: 42
+
+# Evaluation Configuration
+evaluation:
+  confidence_threshold: 0.5
+  iou_threshold: 0.45
+  max_predictions: 300
+
+# FastAPI Configuration
+api:
+  host: "0.0.0.0"
+  port: 8000
+  workers: 4
+  model_path: "./models/best.pt"
+  confidence_threshold: 0.5
+  max_file_size_mb: 10
