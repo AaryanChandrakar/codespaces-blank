@@ -16,7 +16,7 @@ scikit-learn
 albumentations  # Image augmentation
 
 # Web Scraping
-icrawler  # Image crawler for web scraping (compatible release)
+# icrawler  # Image crawler for web scraping (compatible release)
 requests
 beautifulsoup4
 
